@@ -22,7 +22,7 @@ idx2char = np.array(vocab)
 text_as_int = np.array([char2idx[c] for c in text])
 
 # Create training examples and targets
-seq_length = 100
+seq_length = 256
 examples_per_epoch = len(text) // (seq_length + 1)
 
 # Create a TF Dataset of character indices
@@ -84,7 +84,7 @@ class TransformerBlock(layers.Layer):
 
 # Build the decoder-only transformer model
 def build_model(vocab_size, seq_length, embed_dim, num_heads, ff_dim, num_layers):
-    inputs = layers.Input(shape=(seq_length,))
+    inputs = layers.Input(shape=(None,))
     x = PositionalEmbedding(seq_length, vocab_size, embed_dim)(inputs)
     for _ in range(num_layers):
         x = TransformerBlock(embed_dim, num_heads, ff_dim)(x)
@@ -104,7 +104,7 @@ model.compile(optimizer="adam",
 model.summary()
 
 # Train the model (adjust epochs as needed)
-EPOCHS = 10
+EPOCHS = 50
 model.fit(dataset, epochs=EPOCHS)
 
 # Function to generate text using the trained model
